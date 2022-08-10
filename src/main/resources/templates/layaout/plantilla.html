@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--Agregamos un namespace de seguridad de thymeleaf-->
+<!--Ahora si podremos utilizar las etiquetas de seguridad de thymeleaf-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      >
+<!--    
+    Como hemos agregado el ns que hace referencia a documentos de xhtml
+    con xmlns="http://www.w3.org/1999/xhtml, entonces todas las etiquetas
+    que inician se deben de cerrar, así quecerramos las de meta.-->
+    
+    <!--Sección 7 Manejo de Plantillas con Thymeleaf -------------------------->
+<!--    Está página será la plantilla que vamos a reutilizar en las demás 
+    páginas de html, es decir, en la página de index y en la página de 
+    modificar, así que vamos a definir varias secciones en este caso la
+    primera sección va a ser el header.-->
+
+<!--    Vamos a definir que este elemento va a ser un fragmento que vamos a poder
+    reutilizar en otras páginas así que para ello le agregamos el atributo
+    de "th:fragment" y para poderlo reutilizar y mandarlo a llamar desde otras
+    páginas entonces le asignamos un nombre, en este caso el nombre de "header".
+    Pero puede ser cualquier otro nombre.-->
+
+<!--    Y agregamos el contenido que vamos a reutilizar desde otras páginas en 
+    este caso solamente vamos a agregar un titulo que va a ser el cabecero.
+    Es todo lo que va a tener este fragmento pero podría tener cualquier 
+    cantidad de html y todo lo que esté en este fragmento html entonces lo 
+    vamos a poder reutilizar desde otras páginas, posteriormente vamos a 
+    ver como reutilizar esto.-->
+
+    <!--Luego definiremos nuestro footer-->
+    
+    <!--Por último insetaremos todos los fragmentos en nuestras demás páginas.-->
+    
+    <head>
+        <title>Plantilla</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        
+        
+        
+        <header th:fragment="header">
+<!--            Si lo colocamos así desde thymeleaf borrará todo el texto yh lo que
+            este dentor de la etiqueta y lo sustituira por esa variable que
+            colocamos dentro del texto.-->
+            <h1 th:text="#{plantilla.titulo}">Titulo</h1>
+        </header>
+        
+        <footer th:fragment="footer">
+            
+        <!--Lección 8 Manejo de Mensajes e Internacionalización con Spring ---->
+<!--        Agregamos los siguientes link separados por una barrita de texto |
+        (opcional) para cambiar el idioma.-->
+        <div>
+            <br/>
+            <a th:href="@{/(lang=es)}">ES</a> |
+            <a th:href="@{/(lang=en)}">EN</a>
+        <!--------------------------------------------------------------------->
+        
+            <!--Colocamos el texto directamente-->
+            <span> [[#{plantilla.pie-pagina}]]
+                <!--Así no se perderá este link-->
+                <a href="https://github.com/xzharkonx"> GitHub - Luis Eduardo GM</a>
+            </span>
+            <br/>
+            <!--Agregamos un formulario para hacer logout.-->
+            <form method="POST" th:action="@{/logout}">
+<!--                Mostramos al usuario que hizo login a nuestra aplicación con el tag
+                de authentication, especificamos cual es el atributo que queremos 
+                desplegar, en este caso el nombre del usuario que hizo login en la app.-->
+                <b>User:</b><span sec:authentication="name">Usuario que hizo login</span> |
+                <!--Mostramos los roles pero usamos el objeto de principal y authorities-->
+                <b>Roles:</b><span sec:authentication="principal.authorities">Roles</span> |
+                <a href="#" onclick="this.parentNode.submit();">Logout</a>
+                <!--Se puede usar también un botón tipo submit-->
+            </form>
+        </div>
+            
+        </footer>
+        
+    </body>
+</html>
+
+<!--Seción 8 Manejo de Mensajes e Internacionalización con Spring ------------->
+<!--Cada una de estas etiquetas o cadenas en lugar
+de que las pongamos directamente en la página html las vamos a escribir y las 
+vamos a obtener desde un archivo de messages.propiedades, este es el manejo de 
+mensajes cuando trabajamos con Spring.-->
+
+<!--Para ello nos apoyatemos en los atributos de thyleaf y tomaremos esos datos
+de nuestro archivo de messages.properties, lo haemos de la siguiente forma: -->
+<!--th:text="#{plantilla.titulo}"-->
+
+<!--Pero para colocar el contenido de forma directa sin que se pierda lo que 
+hay detro de la etiqueta como un link <a></a>, podemos colocarlo directamente
+con lo siguiente:-->
+<!--[[#{plantilla.pie-pagina}]]-->

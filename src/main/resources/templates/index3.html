@@ -1,0 +1,195 @@
+<!--Ahora para que podamos manejar información dinámica a nuestra página HTML
+con Thymelaf debemos hacer lo siguiente. Sobre la etiqueta de HTML agregamos
+lo siguiente: xmlns (ns = name space) y ponemos el prefigo th y le pasamos
+la página de thymeleaf, y aunque nos manda un Warning, vamosa omitirlo
+ya que todo está configurado correctamente, hacemos clic en el foquito rojo
+y de damos en Disable HTML error checking-->
+
+<!--En nuestro archivo de applicacion.properties agregamos una configuración ya que
+la tecnología de Thymeleaf hace Caché de manera automática de la información
+que mandamos al navegador, esto para que cuando estemos trabajando en desarrollo
+cuando estemos creando nuestra aplicación no tengamos problemas para visualizar
+los cambios de nuestra aplicación.-->
+
+<!DOCTYPE html>
+<!--<html>-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      >
+    <head>
+        <title>Inicio</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <!--Sección 7 Manejo de Plantillas con Thymeleaf----------------------->
+        <!--<h1>Inicio</h1>-->
+        <header th:replace="layaout/plantilla :: header"></header>
+        <!--------------------------------------------------------------------->
+        <!--Sección 5-->
+<!--        Lo primero que vamos a hacer es agregar nuestro caso de cliente
+        así que agregamos un link y debido a que lo será vamos a utilizar un
+        @, posteriormente agregamos nuestro path entre llaves {} y el path
+        se va a llamar agregar y agregamos el texto de agregar persona-->
+        
+            
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/agregar}">[[#{accion.agregar}]]</a>
+        
+        
+<!--        Por lo que ahora tenemos que agregar el path de /agregar  en nuestro
+        controlador en este caso el ControladorWeb-->
+        
+<!--        Normalmente lo hacemos dentro de la etiqueta p, pero con Thymeleaf
+        Agregamos la información sobre la etiqueta de Text-->
+        <!--<p th:text="Saludos"></p>-->
+        
+        
+<!--    Pero que sucede si la lista está vacía, lo recomendable es mostrarle
+        al usuario que esta lista de personas está vacía, es decir que
+        nuestro listado no contiene ningun elemento-->
+        <!--Verificamos que no tenga valores nulos y que sea diferente de vacía-->
+        <!--También se puede mandar a llamar al método isEmpty(), pero 
+        estamos utiliando la notación de JavaBeans-->
+        <!--Así que primero comprobamos que no este nula ni vacia para mostar los elementos-->
+        <div th:if="${personas != null and !personas.empty}">
+            <!--Creamos una tabla para recorrer una lista de personas-->
+            <table border="1">
+                <tr>
+                    <th>[[#{persona.nombre}]]</th>
+                    <th>[[#{persona.apellido}]]</th>
+                    <th>[[#{persona.email}]]</th>
+                    <th>[[#{persona.telefono}]]</th>
+                    <!--Sección 5-->
+                    <!--Ahora para editar vamos a agregar una nueva Columna-->
+                    <th sec:authorize="hasRole('ROLE_ADMIN')">[[#{accion.editar}]]</th>
+                    <!--Ahora para eliminar vamos a agregar una nueva Columna-->
+                    <th sec:authorize="hasRole('ROLE_ADMIN')">[[#{accion.eliminar}]]</th>
+                </tr>
+
+    <!--            Para iterar cada uno de los elementos de nuestra lista de personas
+                haremos lo siguiente, colocamos dentro de la etiqueta tr (fila),
+                utilizamos el prefijo de thymeleaf "th" y vamos a utiizar la función
+                each para recorrer la lista, posteriormente defininos un nombre de 
+                una variable temporal que va a almacenar cada uno de los elementos
+                de nuestra lista "persona", posteriormente ponemos dos puntos ":"
+                y accedemos a la variable que hemos compartido (la lista de personas)
+                "personas".
+                Con esto vamos a iterar cada uno de los elementos de nuestra lista.-->
+                <tr th:each="persona : ${personas}">
+                    <td th:text="${persona.nombre}">Mostar nombre</td>
+                    <td th:text="${persona.apellido}">Mostar apellido</td>
+                    <td th:text="${persona.email}">Mostar email</td>
+                    <td th:text="${persona.telefono}">Mostar telefono</td>
+                    <!--Sección 5-->
+                    <!--Agregamos los campos que nos permitiran editar y eliminar.-->
+<!--                    Debemos de especificar el path y el id del objeto persona
+                    que estamos seleccionado el cual ya tenemos disponible 
+                    a través del objeto y simplemente concatenamos el valor y
+                    todo esto debe de estar dentro de la misma cadena ya que 
+                    simplemente estamos concatenando el path y posteriormente
+                    el id_persona.
+                    Esto se va a conocer como PathVariable y lo vamos a ver 
+                    posteriormente en la Clase del controlador.
+                    Basicamente lo que estamos haciendo es que a nuestro path
+                    de editat le estamos concatenando el id persona
+                    Por ejemplo: http://localhost/editar/1
+                    Por ello es que el path se va a separar de nueva cuenta
+                    por la / al final del texto_nombre del path.
+                    También existe otra forma que sería pasandolo por QueryParam
+                    en vez de la diagonal al final sería ?, pero esto lo veremos
+                    en el caso de Eliminar para ver como se maneja en los 2
+                    casos, en este caso se hara de tipo PathVariable.
+                    Posteriormente le escribimos el texto editar: 
+                    th:text="Editar" y cerramos el link.-->
+                    <!--Ahora editaremos el controlador-->
+                    <td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/editar/} + ${persona.id_persona}"
+                           th:text="#{accion.editar}"></a></td>   
+                     
+                    <!--Ahora tenemos que mapear el path de eliminar-->
+<!--                    <td><a th:href="@{/eliminar/} + ${persona.id_persona}"
+                           th:text="Eliminar"></a></td>-->
+                           
+                    <!--Otra forma de hacerlo es con un QueryParam-->
+<!--                    El path va a ser eliminar únicamente ya que no vamos
+                    a adjuntar parametros despues del path /eliminar
+                    y el objeto persona.id_persona ya no se va a concatenar.
+                    Y para pasar este parametro de tipo QueryParam lo que vamos
+                    ha hacer entre parentesis depues del path es el nombre
+                    del QueryParam en este caso id_persona y posteriormente
+                    el valor, utilizamos signo de moneda posteriormente entre
+                    llaves y el valor de persona.id_persona, así es la 
+                    diferiencia para formar el path.-->
+                    <td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/eliminar/(id_persona=${persona.id_persona})}"
+                           th:text="#{accion.eliminar}"></a></td>
+<!--                    Podemos observar que en automático Spring al utilizar
+                    esos parentesis y pasar el valor de id_persona lo que hizo
+                    fue ya no concatenarlo de esta manera:  
+                    localhost:8080/eliminar/valor_id_persona, si no que utiliza
+                    QueryParam, por ejemplo:
+                    localhost:8080/eliminar?id_persona=1-->
+                    <!--Pero hará que hacer un cambio del lado del controlador-->
+                </tr>
+            </table>
+        </div>
+         <!--Ahora si los elementos están nulos o vacios mostaremos un mensaje-->
+        <div th:if="${personas == null or personas.empty}">
+            <p th:text="${persona.lista-vacia}"></p>
+        </div>
+        <!--Sección 7 Manejo de Plantillas con Thymeleaf----------------------->
+        <!--<h1>Inicio</h1>-->
+        <footer th:replace="layaout/plantilla :: footer"/>
+        <!--------------------------------------------------------------------->
+        
+        <!--Sección 7 Manejo de Plantillas con Thymeleaf----------------------->
+<!--        Para ponder integrar y reutilizar un fragmento creado en nuestro folder
+        de layout en el html de plantilla a está página.
+        Quitaremos el titulo de h1 que ya habiamos establecido ya no lo
+        utilizaremos ya que el header lo vamos a tomar desde la plantilla
+        y paa poder agregar aquí esa sección o fragmento que definimos en la
+        plantilla utilizamos el mismo elemento de header que ya hemos definido
+        en la plantilla y posteriormente vamos a utilizar el atributo de 
+        thymeleag de "th:replace" para indicar cuál va a ser el elemento que 
+        vamos a insertar en esté punto, así que posteriormente vamos a indicar
+        donde se encuentra nuestra pantilla, está se encuentra dentro de la
+        carpeta de "layaout", por eso puede ser cualquier otro nombre pero 
+        en esté caso es el nombre que le hemos asignado a ese folder y 
+        posteriormente el nombre del archivo de la plantilla en este caso
+        "plantilla", nos quedaría así:-->
+<!--        <header th:replace="layaout/plantilla"/>-->
+        
+<!--        Aunque aquí netbeans está organizando de manera distinta las carpetas,
+        si vamos a la sección de Files (en el lado izquierdo de esta ventana)
+        posteriormente a src/main/resources/templates podemos ver que se 
+        encuetra la carpet layaout y dentro de está carpeta se encuentra el 
+        archivo de plantilla.-->
+
+<!--        Posteriormente ponemos 2 puntos :: a la sección que queremos insertar
+        así que en esté caso queremos acceder al fragmento de header el cuál
+        definimos en nuestra plantilla.Posteriormente cerramos ese elemento 
+        con / al final de la etiqueta. Nos quedaría así:-->
+        <!--        <header th:replace="layaout/plantilla :: header"/>  -->
+        
+        <!--O también puede ser así, sí nos lleva a marcar errores en rojo 
+        en las etiquetas: -->
+        <!--<header th:replace="layaout/plantilla :: header"></header>  -->
+        
+        <!--Luego haremos lo mismo para el footer-->
+        
+        <!--Y por último a todas las demás páginas-->
+        
+        <!--Seción 8 Manejo de Mensajes e Internacionalización con Spring ------------->
+        <!--Cada una de estas etiquetas o cadenas en lugar
+        de que las pongamos directamente en la página html las vamos a escribir y las 
+        vamos a obtener desde un archivo de messages.propiedades, este es el manejo de 
+        mensajes cuando trabajamos con Spring.-->
+
+        <!--Para ello nos apoyatemos en los atributos de thyleaf y tomaremos esos datos
+        de nuestro archivo de messages.properties, lo haemos de la siguiente forma: -->
+        <!--th:text="#{persona.crear}"-->
+
+        <!--Pero para colocar el contenido de forma directa sin que se pierda lo que 
+        hay detro de la etiqueta como un link <a></a>, podemos colocarlo directamente
+        con lo siguiente:-->
+        <!--[[#{persona.crear}]]-->
+            </body>
+</html>

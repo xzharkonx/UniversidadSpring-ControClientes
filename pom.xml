@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>mx.com.luis</groupId>
+    <artifactId>ControlClientes</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>ControlClientes</name>
+    <description>Hola Mundo Con Spring</description>
+
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+                
+        <!--            
+        Agregaremos las librerías de SpringData para poder conectarnos
+        a la base de datos y también el driver de mysql o el 
+        de la base de datos que estemos utilizando.
+        Podemos agregarlas podemos hacerlo directamente o podemos 
+        hacerlo desde el Wizard de Spring Boot.
+        
+        Para utilizar el Wizard de Spring daremos en clic derecho y
+        en Insert Code y posteriormente seleccionamos la última
+        opción de Spring Boot Dependencies... 
+        
+        Podemos observar que nos muestra el Wizard que utilizamos al
+        principio cuando creamos nuestro proyeto.
+        
+        Así que solamente agregamos las nuevas que querramos.
+        Vamos a la sección de SQL y seleccionamos la opción de 
+        Spring Data JPA, pero también existen otras opciones o 
+        implementaciones como puede ser JDBC puro o Spring Data JDBC
+        Sin embargo ya no utilizaremos ese tipo de tecnologías. 
+        En este momento nos iremos directamente sobre lo que vamos a
+        estar utilizandando en nuestros proyectos reales.
+        
+        También seleccionamos el MySQL Driver (para trabajar con la 
+        base de datos de Mysql). 
+        Si estamos trabajando también con pruebas y queremos usar una
+        base de datos en memoria podemos agregar H2 Database, pero 
+        de igualmanera esto es únicamente recomendado para hacer 
+        pruebas, así que si vamos a trabajar con proyectos reales lo
+        recomendable es usar una base de datos ya real (MySQL, Oracle,
+        Postgres, etc...).
+        
+        Para descargar estas librerías vamos a seleccionar nuestro proyecto
+        y haremos Clean and Build y con eso se nos van a descargar las 
+        librerías que tengamos pendientes.
+        
+        Sin embargo, nos podría marcar un ERROR ya que debido a que como 
+        hemos agregado la dependencia a Spring Data entonces en automático 
+        busca una configuración de conexión a la Base de Datos. Así que es 
+        normal que nos marque este error;
+
+        Description:
+
+        Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+
+        Reason: Failed to determine a suitable driver class
+
+
+        Action:
+
+        Consider the following:
+                If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
+                If you have database settings to be loaded from a particular profile you may need to activate it (no profiles are currently active).
+
+        02:07 ERROR 13676 - [           main] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener@49c66ade] to prepare test instance [mx.com.luis.HolaMundoSpringApplicationTests@762637be]
+
+        
+        Ya que está considerando que ya debemos tener configurado la conexión a 
+        la base de datos por lo que hacerlo. Pero con esto ya deberíamos tener
+        las dependencias descargadas para poder empezar a trabajar en nuestro
+        proyecto.
+        
+        Para ello vamos a Other Sources. Luego a src/main/resources y abrimos
+        el archivo de Application Properties. Ir ahí a ver la configuración.
+        
+        También tienes que asegurarte de que en ese archivo no haya comentarios
+        con acentos, o con letras o simbolos raros.
+        -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+         
+        <!--         
+        Dependencia para bases de datos de PostgreSql que dejaremos aquí.
+        -->
+         
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+<!--        Para hacer las validaciones con Sprig agregaremos la siguiente
+        dependencia, se agrego a partir de la sección 6 Validaciones con Spring-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        
+        <!--Dependencia de seguridad de Spring-->
+<!--        esta dependencia nos dará un usuario y una password, el usuario y
+        la password serán:
+        usuario: admin
+        "copiar la que salga en consola al hacer clean and buils.
+        En este caso nos salio la siguiente" 
+        password: b8eef2ee-4e40-4235-9131-228709d059b2 
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        
+        <!--Seguridad en nuestras plantillas de Thymeleaf-->
+        <!--La agregaremos manualmente por que no pertenece a Spring-->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+<!--            Dependiendo de la versión de Spring que tengamos, en este caso
+            con la versión 5-->
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
+        
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

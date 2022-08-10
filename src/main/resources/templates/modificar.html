@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Datos de la Persona</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        
+        <!--Sección 7 Manejo de Plantillas con Thymeleaf----------------------->
+        <header th:replace="layaout/plantilla :: header"></header>
+        <!--------------------------------------------------------------------->
+        <h2>[[#{persona.formulario}]]</h2>
+        
+<!--        Agregamos un path a la página de inicio y reiniciamos porque es posible
+        que no reconozca los cambios.-->
+        <a th:href="@{/}">[[#{accion.regresar}]]</a>
+        <br/>
+        <br/>
+        <h2 style="text-align: left; color:black; margin-bottom: 0px; padding-bottom: 0px; ">Formulario</h2>
+        <hr width="20%" style="margin-top: 0px; padding-top: 0px;" align="left" color="red" >
+        <br/>
+        <!--Vamos a agregar el formulario-->
+        
+<!--        Agregamos un acction que será en controlador donde guardaremos 
+        los datos y le agregaremos el path de guardar para que seguarte está
+        información en la base de datos. El tipo de método sera de tipo post
+        y recuerda que desde el controlador que nos envio a esta vista 
+        compartimos un objeto de tipo Persona, así que este formulario
+        se va a asociar a un objeto de tipo persona, para poderlo asociar desde
+        el formulario thymeleaf utiliza la siguiente sintaxis de 
+        th:object="" y dentro especificamos la variable que hemos compartido
+        en este caso la variable persona del Objeto Persona.
+        Con esto es suficiente para que este formulario se asocie a este Objeto
+        de tipo Persona y ya posteriormente cada uno de los campos vamos a ver
+        como se asocia cada uno de estos elementos.-->
+        <form th:action="@{/guardar}" method="post" th:object="${persona}">
+            <!--Modificando el Objeto de tipo persona-------------------------->
+<!--            Si guardamos directamente no modificará el registro si no que
+            creará un nuevo, esto se debe a que en nuestro formulario en ningún
+            momento hemos especificado el valor del atributo id persona,
+            por lo tanto como no se ha establecido y en el controlador lo 
+            recibe sin establecerlo entonces en automático JPA con la 
+            implementación de Hibernate lo que supone es que es un nuevo
+            Objeto ya que no está establecido el valor de la llave primaria.
+            
+            Así que lo que tenemos que hacer es que dentro de nuestro formulario
+            debemos especificar el valor de id persona si es que existe y la
+            forma más simple es utilizar un campo oculto, así que vamos a
+            utilizar un campo de tipo input, pero en el type vamos a decir que
+            es de tipo hiden: type="hidden" esto quiere decir que no se va a
+            mostrar está información en el formulario, si no que simplemente
+            se va a mostrar como parte de la información del codigo del 
+            formulario, pero este dato solo se vera en el código fuente
+            y no en la vista, por ello es un campo oculto y el atributo va a 
+            ser id_persona y lo asociamos con nuestro valor tal cuál hemos hecho
+            con los otros campos.
+            Y de esta forma va a servir para los 2 casos, tanto para agregar
+            como para modificar. Ya que cuando estamos agregando el valor
+            de id_persona esta nulo, por lo tanto pero si ya tenemos un objeto
+            en memoria (por ejemplo cuando se ejecuto el método editar que
+            recuperamos el objeto de la base de datos) entonces en nuestra vista
+            si se va a desplegar un valor de id_persona. Y como se va a 
+            desplegar esto quiere decir que el Objeto Persona que se va a 
+            recuperar del lado del servidor dentro del Controlador en el método
+            guardar(Persona persona), entonces ya va a tener el valor de
+            id_persona establecido desde el formulario y por lo tanto cuando 
+            guardemos un Objeto de tipo Persona en lugar de hacer un insert
+            hará un Update.-->
+            <input type="hidden" name="id_persona" th:field="*{id_persona}"/>
+            <!----------------------------------------------------------------->
+            
+            <!--Solicitamos los siguientes campos-->
+            <!--Añadimos una etiqueta y la referenciamos al input nombre-->
+            <label for="nombre">[[#{persona.nombre}]]:</label>
+<!--            Agregamos un elemento de tipo input clasico y asociamos el campo 
+            nombre del objeto que le pasamos en este caso el de Persona con
+            esta campo de tipo input y para asociarlo utilizamos la sintaxis
+            th:field="" y posteriormente indicamos el atributo de este Objeto
+            de tipo persona que queremos acceder, para ello ponemos * y 
+            posteriormente entre llaves el atributo del Objeto Persona que 
+            queremos acceder, ya sea para leer o para modificar.
+            Así que * seleccionamos el atributo del Objeto que hemos indicado
+            que se va a asociar con este formulario-->
+
+<!--            Observaremos el label de nombre y posteriormente el input text 
+            para este campo. Si inspeccionamos el input podemos observar que
+            este elemento de input text solamente tiene el id de nombre,
+            ya no esta la sintaxis de thymeleaf si no que directamente se esta
+            asociando con el atributo de nombre del objeto de tipo persona
+            y además nos habrá agregado en automático el id con el nombre de
+            la variable en este caso sera: id="nombre".-->
+            <input type="text" name="nombre" th:field="*{nombre}"/>
+            <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"> Error Nombre</span>
+<!--            Hacemos lo mismo para los demas campos cambiando el atributo del
+            Objeto.
+            -->
+            <br/>
+            <label for="apellido">[[#{persona.apellido}]]:</label>
+            <input type="text" name="apellido" th:field="*{apellido}"/>
+            <span th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"> Error Apellido</span>
+            <br/>
+            <label for="email">[[#{persona.email}]]:</label>
+            <!--Aquí podemos cambiar el tipo a email para que lo valide html-->
+            <!--<input type="email" name="email" th:field="*{email}"/>-->
+<!--            Para que nos salga la validación de Java y no de HTML cambiamos de
+            tipo email a tipo text-->
+            <input type="text" name="email" th:field="*{email}"/>
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"> Error Email</span>
+            <br/>
+            <label for="telefono">[[#{persona.telefono}]]:</label>
+            <input type="text" name="telefono" th:field="*{telefono}"/>
+            <br/>
+            <!--Agregamos el botón de Submit.-->
+            <!--<input type="submit" name="guardar" value="Guardar"/>-->
+<!--            Pero ahora para editar el texto del archivo messages.properties
+            convertiremos el value en uno de thymeleaf:
+            th:value="#{accion.guardar}"
+            mira como en vez de ser $ con en el th:text ahora será una #-->
+            <input type="submit" name="guardar" th:value="#{accion.guardar}"/>
+        </form>
+
+        <!--Sección 7 Manejo de Plantillas con Thymeleaf----------------------->
+        <footer th:replace="layaout/plantilla :: footer"/>
+        <!--------------------------------------------------------------------->
+
+<!--        Ahora falta mapear la acción de guardar, debemos de recuperar está
+        información, así que vamos a ControladorWeb-->
+        
+        <!--Sección 6 Validaciones con Spring--------------------------------------------------------->
+<!--        Ahora agregaremos la información en dado caso de que haya algún error
+        de la validación, entonces debemos mostrar este error.
+        Para ello agregamos una nueva etiqueta, manejaremos la etiqueta span
+        y dentro del span agregamos lo siguiente-->
+<!--        <span th:if=""></span>-->
+
+<!--        Lo que vamos a hacer es preguntar si el campo de nombre contiene errores
+        Para poder preguntar utilizamos nuestra expresión $ para poder ingresar
+        a la siguiente función y utilizamos un comodín (existen varios pero 
+        aqui utilizaremos el comidín de fields) entonces nos queda:-->
+<!--        <span th:if="${#fields}"></span>-->
+        
+<!--        Para preguntar si alguno de los campos del formulario contiene errores
+        y para ello utilizamos la función hasErrors() y posteriormente le
+        pasamos como parametro el campo sobre el cuál queremos preguntar si 
+        existe algún error en este caos el campo de nombre el cuál debe de 
+        estar entre comillas, ya que no podemos utilizar comilla doble porque
+        en la parte externa utilizamos ya comilla doble entonces nos queda:-->
+<!--        <span th:if="${#fields.hasErrors('nombre')}"></span>-->
+        
+<!--        Así que con esto estamos preguntando si el campo de nombre tiene errores
+        y si contiene errores entonces vamos a desplegarlos utilizando el 
+        atributo de thymeleaf de th:errors y apuntamos al atributo con *
+        y llaves *{} posteriormente el campo sobre el cuál queremos obtener el
+        error y posteriormente podemos agregar cualquier texto que va a ser
+        reemplazado así que agregamos Error Nombre (esto no se vera porque
+        si no existes errores entonces no se va a desplegar este span, por eso
+        la validación del if), esta es toda la sintaxis para validar si un campo
+        contiene errores.-->
+<!--        <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"> Error Nombre</span>-->
+        
+        <!--Haremos lo mismo para cada atributo.-->
+        
+<!--        Para el atributo de Email, si no fue bien colocado se aplicará la 
+        validación de HTML pero para que se aplique la de Java hacemos lo
+        Siguiente, en el campo de Email indicampos que en vez de ser de 
+        tipo email vamos a idicar que es de tipo texto, entones de 
+        type="email" a type="text" y dentro de nuestra Clase Persona
+        vamos a indicar en el atributo una anotación de @Email.-->
+        
+<!--        Ahora tenemos que modificar en nuestro Controlador, ya que al momento de
+        mandar a llamar nuestro método de guardar (el path de /guardar) 
+        entonces debemos de recuperar los errores, así que ir a ver como esta
+        colocada está parte ahí.-->
+        <!-------------------------------------------------------------------------------------------->
+        
+    </body>
+</html>

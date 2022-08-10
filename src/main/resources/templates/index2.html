@@ -1,0 +1,73 @@
+<!--Ahora para que podamos manejar información dinámica a nuestra página HTML
+con Thymelaf debemos hacer lo siguiente. Sobre la etiqueta de HTML agregamos
+lo siguiente: xmlns (ns = name space) y ponemos el prefigo th y le pasamos
+la página de thymeleaf, y aunque nos manda un Warning, vamosa omitirlo
+ya que todo está configurado correctamente, hacemos clic en el foquito rojo
+y de damos en Disable HTML error checking-->
+
+<!--En nuestro archivo de applicacion.properties agregamos una configuración ya que
+la tecnología de Thymeleaf hace Caché de manera automática de la información
+que mandamos al navegador, esto para que cuando estemos trabajando en desarrollo
+cuando estemos creando nuestra aplicación no tengamos problemas para visualizar
+los cambios de nuestra aplicación.-->
+
+<!DOCTYPE html>
+<!--<html>-->
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Inicio</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Inicio</h1>
+<!--        Normalmente lo hacemos dentro de la etiqueta p, pero con Thymeleaf
+        Agregamos la información sobre la etiqueta de Text-->
+        <p th:text="Saludos"></p>
+<!--        Probamos los cambios con la configuración en application.properties
+        para poder ver desplegada la información, si la vemos todo irá
+        correctamente.-->
+        <p th:text="Adios"></p>
+        
+        
+<!--    Pero que sucede si la lista está vacía, lo recomendable es mostrarle
+        al usuario que esta lista de personas está vacía, es decir que
+        nuestro listado no contiene ningun elemento-->
+        <!--Verificamos que no tenga valores nulos y que sea diferente de vacía-->
+        <!--También se puede mandar a llamar al método isEmpty(), pero 
+        estamos utiliando la notación de JavaBeans-->
+        <!--Así que primero comprobamos que no este nula ni vacia para mostar los elementos-->
+        <div th:if="${personas != null and !personas.empty}">
+            <!--Creamos una tabla para recorrer una lista de personas-->
+            <table border="1">
+                <tr>
+                    <th>Nombre </th>
+                    <th>Apellido </th>
+                    <th>Email </th>
+                    <th>Telefono </th>
+                </tr>
+
+    <!--            Para iterar cada uno de los elementos de nuestra lista de personas
+                haremos lo siguiente, colocamos dentro de la etiqueta tr (fila),
+                utilizamos el prefijo de thymeleaf "th" y vamos a utiizar la función
+                each para recorrer la lista, posteriormente defininos un nombre de 
+                una variable temporal que va a almacenar cada uno de los elementos
+                de nuestra lista "persona", posteriormente ponemos dos puntos ":"
+                y accedemos a la variable que hemos compartido (la lista de personas)
+                "personas".
+                Con esto vamos a iterar cada uno de los elementos de nuestra lista.-->
+                <tr th:each="persona : ${personas}">
+                    <td th:text="${persona.nombre}">Mostar nombre</td>
+                    <td th:text="${persona.apellido}">Mostar apellido</td>
+                    <td th:text="${persona.email}">Mostar email</td>
+                    <td th:text="${persona.telefono}">Mostar telefono</td>
+                </tr>
+            </table>
+        </div>
+         <!--Ahora si los elementos están nulos o vacios mostaremos un mensaje-->
+        <div th:if="${personas == null or personas.empty}">
+            <p>La lista listaPersonas está vacía.</p>
+        </div>
+ 
+    </body>
+</html>
